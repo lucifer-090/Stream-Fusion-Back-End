@@ -3,7 +3,7 @@ const cors = require('cors'); // Import cors
 const bodyParser = require('body-parser');
 const sequelize = require('./database');
 const userRoutes = require('./routes/userRoutes');
-const videoRoutes = require('./Routes/videoRoutes');
+const videoRoutes = require('./routes/videoRoutes');
 const path = require('path');
 
 const app = express();
