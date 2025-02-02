@@ -22,6 +22,7 @@ const Video = sequelize.define('Video', {
     allowNull: false,
   },
 }, {
+  tableName: 'videos',
   timestamps: true,
 });
 

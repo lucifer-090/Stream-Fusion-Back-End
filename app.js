@@ -12,13 +12,12 @@ const app = express();
 app.use(cors({ origin: 'http://localhost:3000', credentials: true })); // Allow frontend origin
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded videos statically
 
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/videos', videoRoutes);
 
-// Static folder for serving uploaded videos
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Test route
 app.get('/', (req, res) => {

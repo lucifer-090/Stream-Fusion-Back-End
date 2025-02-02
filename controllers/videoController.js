@@ -1,22 +1,28 @@
 const { Video } = require('../models');
+const path = require('path');
 
-// Upload a video
+// Upload a video and store its path in the database
 exports.upload = async (req, res) => {
   try {
-    const { title, description, category, tags } = req.body;
-    const videoPath = req.file.path;
+    if (!req.file) {
+      return res.status(400).json({ message: 'No video file uploaded!' });
+    }
 
+    const { title, description, category, tags } = req.body;
+    const videoPath = `/uploads/${req.file.filename}`; // Store relative path
+
+    // Save video details in the database
     const video = await Video.create({
       title,
       description,
       category,
       tags,
-      video_path: videoPath,
+      videoPath, // Ensure this field exists in the Video model
     });
 
     res.status(201).json({ message: 'Video uploaded successfully!', video });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -26,6 +32,6 @@ exports.getAllVideos = async (req, res) => {
     const videos = await Video.findAll();
     res.status(200).json(videos);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };

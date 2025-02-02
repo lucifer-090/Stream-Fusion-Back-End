@@ -14,12 +14,22 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({ 
+  storage,
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['video/mp4', 'video/mkv', 'video/avi'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only video files are allowed!'), false);
+    }
+  },
+ });
 
 // Video upload route
 router.post('/upload', upload.single('video'), videoController.upload);
 
 // Get all videos
-router.get('/', videoController.getAllVideos);
+router.get('/videoList', videoController.getAllVideos);
 
 module.exports = router;
