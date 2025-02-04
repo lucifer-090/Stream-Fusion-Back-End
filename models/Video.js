@@ -22,12 +22,12 @@ const Video = sequelize.define('Video', {
     allowNull: false,
   },
 }, {
-  tableName: 'videos',
   timestamps: true,
+  tableName: 'Videos'
 });
 
 // Define relationship
-Video.belongsTo(User, { foreignKey: 'userId' });
-User.hasMany(Video, { foreignKey: 'userId' });
+Video.belongsTo(User, { foreignKey: 'id' });
+User.hasMany(Video, { foreignKey: 'id' });
 
 module.exports = Video;

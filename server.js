@@ -1,18 +1,44 @@
-// Import the main app
-const app = require('./app');
+
+//Initialization
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const sequelize = require('./database');
-const Video = require('./models/Video'); // Ensure models are loaded
+const userRoute = require('./routes/userRoutes')
+const videoRoute = require('./routes/videoRoutes')
+const path = require('path')
 
-// Start the server
-const PORT = process.env.PORT || 3001;
+//Creating a Server
+const app = express();
 
-sequelize.sync({ alter: true }) // Sync models to the database
-  .then(() => {
-    console.log('Database synced successfully.');
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('Error syncing database:', err.message);
-  });
+// ✅ Enable CORS for all origins
+app.use(cors({
+    origin: "*", // Allow requests from any frontend
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"]
+  }));
+  
+//Creating a port
+const PORT = process.env.PORT || 8080
+
+//Creating a middleware
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
+// Serve uploaded videos
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+
+app.get('/login',(req, res)=>{
+    res.send("Welcome to the web page")
+})
+
+
+app.use('/users', userRoute);
+app.use('/videos', videoRoute);
+
+//Running on PORT
+app.listen(PORT, ()=>{
+    console.log(`Server Running on........................ PORT ${PORT}`)
+})
