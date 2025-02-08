@@ -9,9 +9,9 @@ exports.register = async (req, res) => {
     const { fullname, email, password, contact, address, } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({ fullname, email, password: hashedPassword, contact, address });
-    res.status(201).json({ message: 'User registered successfully!', User });
+    return res.status(201).json({ message: 'User registered successfully!', User });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    return res.status(400).json({ error: error.message });
   }
 };
 
@@ -31,7 +31,7 @@ exports.login = async (req, res) => {
     });
 
     // Respond with token and user details
-    res.json({
+    return res.json({
       token,
       user: {
         id: user.id,
@@ -40,7 +40,7 @@ exports.login = async (req, res) => {
       },
     });
 
-    res.status(200).json({ message: 'Login successful!', user });
+    return res.status(200).json({ message: 'Login successful!', user });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

@@ -21,10 +21,17 @@ const Video = sequelize.define('Video', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  uploadedBy: { 
+    type: DataTypes.STRING, 
+    allowNull: false }, // Foreign key for the User table
 }, {
   timestamps: true,
   tableName: 'Videos'
 });
+
+// Video.associate = (models) => {
+//   Video.belongsTo(models.User, { foreignKey: 'userId', as: 'uploader' }); // Relate Video to User
+// };
 
 // Define relationship
 Video.belongsTo(User, { foreignKey: 'id' });

@@ -43,7 +43,7 @@ router.get('/videoList', videoController.getAllVideos);
 
 router.get("/:id", videoController.getVideoById);
 
-router.get("/videos/search", videoController.searchVideos);
+router.get("/search", videoController.searchVideos);
 
 
 

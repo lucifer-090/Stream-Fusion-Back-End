@@ -1,4 +1,4 @@
-const { Video } = require('../models');
+const { Video, User } = require('../models');
 const { Op } = require("sequelize");
 const path = require('path');
 
@@ -11,6 +11,7 @@ exports.upload = async (req, res) => {
 
     const { title, description, category, tags} = req.body;
     const videoPath = `/uploads/${req.file.filename}`; // Store relative path
+    const uploadedBy = req.user.fullname; // Extract user name from token (auth middleware)
 
     // Save video details in the database
     const video = await Video.create({
@@ -19,6 +20,7 @@ exports.upload = async (req, res) => {
       category,
       tags,
       videoPath, // Ensure this field exists in the Video model
+      uploadedBy,
     });
 
     res.status(201).json({ message: 'Video uploaded successfully!', video });
@@ -31,8 +33,10 @@ exports.upload = async (req, res) => {
 // Get all videos
 exports.getAllVideos = async (req, res) => {
   try {
-    const videos = await Video.findAll();
-    console.log("Videos fetched from database:", videos); // Debugging log
+    const videos = await Video.findAll({
+      attributes: ['id', 'title', 'description', 'videoPath', 'uploadedBy', 'createdAt'],
+      order: [['createdAt', 'DESC']], // Show latest videos first
+    });
     res.status(200).json(videos);
   } catch (error) {
     console.error("Error fetching videos:", error);
@@ -66,7 +70,7 @@ exports.searchVideos = async (req, res) => {
           [Op.iLike]: `%${query}%`, // Case-insensitive matching
         },
       },
-      attributes: ["id", "title"], // Return only necessary fields
+      attributes: ["id", "title", "uploadedBy"], // Return only necessary fields
     });
 
     if (videos.length === 0) {

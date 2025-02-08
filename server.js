@@ -15,7 +15,7 @@ const app = express();
 app.use(cors({
     origin: "*", // Allow requests from any frontend
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type"]
+    allowedHeaders: ["Content-Type", "Authorization"]
   }));
   
 //Creating a port
