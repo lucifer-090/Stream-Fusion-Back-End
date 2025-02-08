@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const videoController = require('../controllers/videoController'); // Import video controller
 const multer = require('multer');
+const isAuthenticated = require('../middleware/authMiddleware'); // Import the middleware
 const path = require('path');
 
 // Multer configuration for file uploads
@@ -35,7 +36,7 @@ const upload = multer({
  });
 
 // Video upload route
-router.post('/upload', upload.single('video'), videoController.upload);
+router.post('/upload',isAuthenticated, upload.single('video'), videoController.upload);
 
 // Get all videos
 router.get('/videoList', videoController.getAllVideos);
