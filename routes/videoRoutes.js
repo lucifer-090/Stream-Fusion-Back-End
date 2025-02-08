@@ -40,4 +40,10 @@ router.post('/upload', upload.single('video'), videoController.upload);
 // Get all videos
 router.get('/videoList', videoController.getAllVideos);
 
+router.get("/:id", videoController.getVideoById);
+
+router.get("/videos/search", videoController.searchVideos);
+
+
+
 module.exports = router;
