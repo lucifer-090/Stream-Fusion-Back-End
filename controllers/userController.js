@@ -9,9 +9,9 @@ exports.register = async (req, res) => {
     const { fullname, email, password, contact, address, } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({ fullname, email, password: hashedPassword, contact, address });
-    return res.status(201).json({ message: 'User registered successfully!', User });
+    res.status(201).json({ message: 'User registered successfully!', User });
   } catch (error) {
-    return res.status(400).json({ error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -26,22 +26,24 @@ exports.login = async (req, res) => {
     if (!isMatch) return res.status(401).json({ message: 'Invalid credentials!' });
 
      // Generate JWT Token
-     const token = jwt.sign({ id: user.id, email: user.email }, 'your-secret-key', {
-      expiresIn: '1h',
+     const token = jwt.sign({ id: user.id, email: user.email }, 'ASDFGVYGVYWTFYVGVAJGHVDSVGHADCF23T2T3677', {
+      expiresIn: '24h',
     });
 
     // Respond with token and user details
-    return res.json({
+    res.json({
       token,
       user: {
         id: user.id,
         fullname: user.fullname,
         email: user.email,
+        message: "login Successful!!!"
       },
     });
 
-    return res.status(200).json({ message: 'Login successful!', user });
+    // res.status(200).json({ message: 'Login successful!', user });
   } catch (error) {
+    console.log(error)
     res.status(400).json({ error: error.message });
   }
 };

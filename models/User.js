@@ -28,8 +28,8 @@ const User = sequelize.define('User', {
   tableName: 'Users'
 });
 
-User.associate = (models) => {
-  User.hasMany(models.Video, { foreignKey: 'userId', as: 'videos' }); // Relate User to Videos
-};
+// User.associate = (models) => {
+//   User.hasMany(models.Video, { foreignKey: 'userId', as: 'videos' }); // Relate User to Videos
+// };
 
 module.exports = User;
