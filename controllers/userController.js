@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 //  const models = require('../models');
 const { User } = require('../models');
 const jwt = require('jsonwebtoken');
+require('dotenv').config(); // Load environment variables
 
 // Register a new user
 exports.register = async (req, res) => {
@@ -26,7 +27,8 @@ exports.login = async (req, res) => {
     if (!isMatch) return res.status(401).json({ message: 'Invalid credentials!' });
 
      // Generate JWT Token
-     const token = jwt.sign({ id: user.id, email: user.email }, 'ASDFGVYGVYWTFYVGVAJGHVDSVGHADCF23T2T3677', {
+     const token = jwt.sign({ id: user.id, email: user.email }, 'your_secret_key', 
+      {
       expiresIn: '24h',
     });
 

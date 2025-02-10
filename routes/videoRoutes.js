@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const videoController = require('../controllers/videoController'); // Import video controller
 const multer = require('multer');
-const isAuthenticated = require('../middleware/authMiddleware'); // Import the middleware
+// const isAuthenticated = require('../middleware/authMiddleware'); // Import the middleware
 const path = require('path');
+const authenticate = require('../middleware/authMiddleware');
 
 // Multer configuration for file uploads
 const storage = multer.diskStorage({
@@ -18,7 +19,6 @@ const storage = multer.diskStorage({
 const upload = multer({ 
   storage,
   fileFilter: (req, file, cb) => {
-    // const allowedTypes = ['video/mp4', 'video/mkv', 'video/avi'];
     const allowedTypes = [
       'video/mp4',
       'video/mkv',
@@ -36,7 +36,7 @@ const upload = multer({
  });
 
 // Video upload route
-router.post('/upload',isAuthenticated, upload.single('video'), videoController.upload);
+router.post('/upload',authenticate, upload.single('video'), videoController.upload);
 
 // Get all videos
 router.get('/videoList', videoController.getAllVideos);
