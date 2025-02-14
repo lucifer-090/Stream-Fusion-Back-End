@@ -1,10 +1,10 @@
-const { Notification} = require('../models');
+// const { Notification} = require('../models');
 const { Op } = require("sequelize");
 const db = require('../models'); // Import `db`
 const path = require('path');
 
 // Use `db.Video` and `db.User`
-const { Video, User } = db;
+const { Video, User, Notification } = db;
 
 // Upload a video and store its path in the database
 exports.upload = async (req, res) => {
@@ -21,10 +21,6 @@ exports.upload = async (req, res) => {
     const videoPath = `/uploads/${req.file.filename}`; // Store relative path
     const uploadedBy = req.user.id; // Extract user name from token (auth middleware)
 
-     // ✅ Ensure `Video` model is properly initialized before using `create()`
-    //  if (!Video) {
-    //   return res.status(500).json({ message: "Video model is not initialized!" });
-    // }
 
     // Save video details in the database
     const video = await Video.create({
@@ -36,10 +32,16 @@ exports.upload = async (req, res) => {
       uploadedBy,
     });
 
-    // Create a notification for the upload
+    //Create a notification for the upload
+    await Notification.create({
+      message: `${req.user.fullname} uploaded a new video: ${title}`,
+      userId: req.user.id, // Store the uploader's user ID
+    });
+
+    // // 🔔 Create Notification for New Video
     // await Notification.create({
-    //   message: `${uploadedBy} uploaded a new video: ${title}`,
-    //   userId: req.user.id, // Store the uploader's user ID
+    //   message: `New video uploaded: ${title}`,
+    //   userId: uploadedBy, // Associate with uploader
     // });
 
     res.status(201).json({ message: 'Video uploaded successfully!', video });

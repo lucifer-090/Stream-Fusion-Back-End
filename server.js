@@ -55,6 +55,9 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 
+const notificationRoutes = require('./routes/notificationRoutes');
+
+
 // Import database and models
 const db = require('./models'); // ✅ Import db from index.js
 const userRoute = require('./routes/userRoutes');
@@ -83,6 +86,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Routes
 app.use('/users', userRoute);
 app.use('/videos', videoRoute);
+app.use('/notifications', notificationRoutes);
 
 // ✅ Sync Database and Start Server on the Defined PORT
 db.sequelize.sync({ alter: true })
