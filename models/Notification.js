@@ -1,23 +1,3 @@
-// module.exports = (sequelize, DataTypes) => {
-//     const Notification = sequelize.define("Notification", {
-//       message: {
-//         type: DataTypes.STRING,
-//         allowNull: false,
-//       },
-//       userId: {
-//         type: DataTypes.INTEGER, // User who uploaded the video
-//         allowNull: false,
-//       },
-//     });
-  
-//     Notification.associate = (models) => {
-//       Notification.belongsTo(models.User, { foreignKey: "userId" });
-//     };
-  
-//     return Notification;
-//   };
-  
-
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database');
 // const User = require('./User');
@@ -40,6 +20,22 @@ const Notification = sequelize.define('Notification', {
       key: 'id',
     },
   },
+
+  videoId: {
+    type: DataTypes.INTEGER,
+    allowNull: false, // Video ID should be required
+    references: {
+      model: 'Videos',
+      key: 'id',
+    },
+  },
+
+  read: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false, // ✅ New column to track read/unread status
+  },
+  
 }, {
   timestamps: true,
   tableName: 'Notifications'

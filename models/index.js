@@ -1,24 +1,28 @@
-
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../database");
 
-
-// ✅ Import models directly
+// Import models
 const User = require("./User");
 const Video = require("./Video");
 const Notification = require("./Notification");
 
-// ✅ Define relationships inside `index.js`
+// Define relationships
+// User & Video Relationship (Uploader)
 User.hasMany(Video, { foreignKey: "uploadedBy", as: "videos" });
 Video.belongsTo(User, { foreignKey: "uploadedBy", as: "uploader" });
 
-User.hasMany(Notification, { foreignKey: "userId", as: "notifications" }); // ✅ One user has many notifications
-Notification.belongsTo(User, { foreignKey: "userId", as: "user" }); // ✅ Notification belongs to a user
+// User & Notification Relationship
+User.hasMany(Notification, { foreignKey: "userId", as: "notifications" });
+Notification.belongsTo(User, { foreignKey: "userId", as: "user" });
 
-// ✅ Attach sequelize instance
-const db = { sequelize, Sequelize, User, Video, Notification};
+// Video & Notification Relationship
+Video.hasMany(Notification, { foreignKey: "videoId", as: "videoNotifications" });
+Notification.belongsTo(Video, { foreignKey: "videoId", as: "video" });
 
-module.exports = db; // ✅ Now we use `db` in controllers
+// Export database instance
+const db = { sequelize, Sequelize, User, Video, Notification };
+
+module.exports = db; // Now we use `db` in controllers
 
 
 

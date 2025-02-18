@@ -5,7 +5,7 @@ const db = require('../models'); // Import `db`
 const jwt = require('jsonwebtoken');
 require('dotenv').config(); // Load environment variables
 
-const { User } = db; // ✅ Use User model from `db`
+const { User } = db; // Use User model from `db`
 
 // Register a new user
 exports.register = async (req, res) => {
@@ -32,7 +32,7 @@ exports.login = async (req, res) => {
      // Generate JWT Token
      const token = jwt.sign(
       { id: user.id, email: user.email },
-      process.env.JWT_SECRET,  // ✅ Use environment variable
+      process.env.JWT_SECRET,  // Use environment variable
       { expiresIn: "24h" }
     );
     //  const token = jwt.sign({ id: user.id, email: user.email }, 'HGACDhchgshdcgahsFGSFCD267362563752', 

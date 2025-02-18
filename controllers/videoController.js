@@ -1,4 +1,3 @@
-// const { Notification} = require('../models');
 const { Op } = require("sequelize");
 const db = require('../models'); // Import `db`
 const path = require('path');
@@ -32,22 +31,31 @@ exports.upload = async (req, res) => {
       uploadedBy,
     });
 
-    //Create a notification for the upload
-    await Notification.create({
+  // Fetch all users except the uploader
+  const usersToNotify = await User.findAll({
+    where: {
+      id: { [Op.ne]: uploadedBy }, // Exclude the uploader
+    },
+  });
+
+  if (!usersToNotify || usersToNotify.length === 0) {
+    console.log("No users to notify.");
+  } else {
+    // Create notifications for each user
+    const notifications = usersToNotify.map((user) => ({
       message: `${req.user.fullname} uploaded a new video: ${title}`,
-      userId: req.user.id, // Store the uploader's user ID
-    });
+      userId: user.id,
+      videoId: video.id,
+      isRead: false,
+    }));
 
-    // // 🔔 Create Notification for New Video
-    // await Notification.create({
-    //   message: `New video uploaded: ${title}`,
-    //   userId: uploadedBy, // Associate with uploader
-    // });
+    await Notification.bulkCreate(notifications);
+  }
 
-    res.status(201).json({ message: 'Video uploaded successfully!', video });
-  } catch (error) {
-    console.log("Upload error details:", error.errors || error);
-    res.status(500).json({ error: error.message, details: error.errors || "No additional details" });
+  res.status(201).json({ message: 'Video uploaded successfully!', video });
+} catch (error) {
+  console.log("Upload error details:", error.errors || error);
+  res.status(500).json({ error: error.message, details: error.errors || "No additional details" });
 }
 };
 
@@ -58,7 +66,7 @@ exports.getAllVideos = async (req, res) => {
       include: [{ 
         model: User, 
         as: 'uploader', 
-        attributes: ['fullname'] // ✅ Fetch uploader's name
+        attributes: ['fullname'] // Fetch uploader's name
       }],
       attributes: ['id', 'title', 'description', 'videoPath', 'uploadedBy', 'createdAt'],
       order: [['createdAt', 'DESC']], // Show latest videos first
@@ -109,17 +117,3 @@ exports.searchVideos = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-// Fetch notifications for logged-in user
-exports.getNotifications = async (req, res) => {
-  try {
-    const notifications = await Notification.findAll({
-      order: [["createdAt", "DESC"]],
-      limit: 10, // Limit to the latest 10 notifications
-    });
-
-    res.status(200).json(notifications);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-;}
