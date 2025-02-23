@@ -33,7 +33,7 @@ const Notification = sequelize.define('Notification', {
   read: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
-    defaultValue: false, // ✅ New column to track read/unread status
+    defaultValue: false, // New column to track read/unread status
   },
   
 }, {
