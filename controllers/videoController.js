@@ -81,7 +81,14 @@ exports.getAllVideos = async (req, res) => {
 exports.getVideoById = async (req, res) => {
   try {
     const { id } = req.params;
-    const video = await Video.findByPk(id); // Sequelize automatically includes createdAt
+    const video = await Video.findByPk(id, {
+      include: [{ 
+        model: User, 
+        as: "uploader", 
+        attributes: ["id", "fullname"] // Include uploader name
+      }],
+    });
+    
     if (!video) {
       return res.status(404).json({ message: "Video not found" });
     }
@@ -117,3 +124,27 @@ exports.searchVideos = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+// Fetch remaining videos excluding the currently playing one
+exports.getRemainingVideos = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Fetch all videos except the one being played
+    const remainingVideos = await Video.findAll({
+      where: {
+        id: { [Op.ne]: id }, // Exclude the current video
+      },
+      include: [{ model: User, as: "uploader", attributes: ["fullname"] }],
+      attributes: ["id", "title", "videoPath"],
+      limit: 6, // Show only 6 videos for better UI
+    });
+
+    res.status(200).json(remainingVideos);
+  } catch (error) {
+    console.error("Error fetching remaining videos:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+

@@ -45,6 +45,13 @@ router.get("/:id", videoController.getVideoById);
 
 router.get("/search", videoController.searchVideos);
 
+// Fetch related videos
+// router.get("/related/:id", videoController.getRelatedVideos);
+
+router.get("/remaining/:id", videoController.getRemainingVideos);
+
+
+
 
 
 module.exports = router;
