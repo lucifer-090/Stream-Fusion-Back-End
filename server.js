@@ -11,7 +11,7 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const db = require('./models'); // Import db from index.js
 const userRoute = require('./routes/userRoutes');
 const videoRoute = require('./routes/videoRoutes');
-const commentRoutes = require("./routes/commentRoutes"); // ✅ Import comment routes
+const commentRoutes = require("./routes/commentRoutes"); // Import comment routes
 
 // Define PORT explicitly
 const PORT = process.env.PORT || 8080; // Now it's clearly defined
@@ -37,7 +37,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use('/users', userRoute);
 app.use('/videos', videoRoute);
 app.use('/notifications', notificationRoutes);
-app.use("/comments", commentRoutes); // ✅ Register comment routes
+app.use("/comments", commentRoutes); // Register comment routes
 
 // Sync Database and Start Server on the Defined PORT
 db.sequelize.sync({ alter: true })

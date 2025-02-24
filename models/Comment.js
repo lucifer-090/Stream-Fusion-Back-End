@@ -38,7 +38,4 @@ const Comment = sequelize.define(
   }
 );
 
-// Comment.belongsTo(User, { foreignKey: "userId", as: "user" });
-// Comment.belongsTo(Video, { foreignKey: "videoId", as: "video" });
-
 module.exports = Comment;

@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const videoController = require('../controllers/videoController'); // Import video controller
 const multer = require('multer');
-// const isAuthenticated = require('../middleware/authMiddleware'); // Import the middleware
 const path = require('path');
 const authenticate = require('../middleware/authMiddleware');
 
@@ -44,9 +43,6 @@ router.get('/videoList', videoController.getAllVideos);
 router.get("/:id", videoController.getVideoById);
 
 router.get("/search", videoController.searchVideos);
-
-// Fetch related videos
-// router.get("/related/:id", videoController.getRelatedVideos);
 
 router.get("/remaining/:id", videoController.getRemainingVideos);
 
