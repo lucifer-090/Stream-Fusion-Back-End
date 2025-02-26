@@ -37,12 +37,14 @@ const upload = multer({
 // Video upload route
 router.post('/upload',authenticate, upload.single('video'), videoController.upload);
 
+router.get("/search", videoController.searchVideos);
+
 // Get all videos
 router.get('/videoList', videoController.getAllVideos);
 
 router.get("/:id", videoController.getVideoById);
 
-router.get("/search", videoController.searchVideos);
+
 
 router.get("/remaining/:id", videoController.getRemainingVideos);
 

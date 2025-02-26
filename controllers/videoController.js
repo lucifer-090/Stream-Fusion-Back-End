@@ -98,32 +98,63 @@ exports.getVideoById = async (req, res) => {
   }
 };
 
+// exports.searchVideos = async (req, res) => {
+//   try {
+//     const { query } = req.query; // Get the search query from request
+//     if (!query) {
+//       return res.status(400).json({ message: "Query parameter is required" });
+//     }
+
+//     const videos = await Video.findAll({
+//       where: {
+//         title: {
+//           [Op.iLike]: `%${query}%`, // Case-insensitive matching
+//         },
+//       },
+//       attributes: ["id", "title", "uploadedBy", "videoPath"], // Return only necessary fields
+//     });
+
+//     if (videos.length === 0) {
+//       return res.status(404).json({ message: "No videos found" });
+//     }
+
+
+//     res.status(200).json(videos); // Send the matching videos
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 exports.searchVideos = async (req, res) => {
   try {
-    const { query } = req.query; // Get the search query from request
+    const { query } = req.query;
     if (!query) {
       return res.status(400).json({ message: "Query parameter is required" });
     }
 
     const videos = await Video.findAll({
       where: {
-        title: {
-          [Op.iLike]: `%${query}%`, // Case-insensitive matching
-        },
+        [Op.or]: [
+          { title: { [Op.iLike]: `%${query}%` } },  // Search by title
+          { category: { [Op.iLike]: `%${query}%` } } // Search by category
+        ],
       },
-      attributes: ["id", "title", "uploadedBy", "videoPath"], // Return only necessary fields
+      attributes: ["id", "title", "category", "uploadedBy", "videoPath"],
+      include: [{ model: User, as: "uploader", attributes: ["fullname"] }],
+      limit: 20, // ✅ Return only top 10 suggestions
     });
 
     if (videos.length === 0) {
-      return res.status(404).json({ message: "No videos found" });
+      return res.status(404).json({ message: "No matching videos found" });
     }
 
-
-    res.status(200).json(videos); // Send the matching videos
+    res.status(200).json(videos);
   } catch (error) {
+    console.error("Error searching videos:", error);
     res.status(500).json({ error: error.message });
   }
 };
+
 
 
 // Fetch remaining videos excluding the currently playing one
@@ -138,7 +169,7 @@ exports.getRemainingVideos = async (req, res) => {
       },
       include: [{ model: User, as: "uploader", attributes: ["fullname"] }],
       attributes: ["id", "title", "videoPath"],
-      limit: 6, // Show only 6 videos for better UI
+      limit: 20, 
     });
 
     res.status(200).json(remainingVideos);
